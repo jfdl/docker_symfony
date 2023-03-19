@@ -1,0 +1,75 @@
+version: "3.8"
+services:
+    db_mysql:
+        image: mysql
+        container_name: ${DOCKER_PREFIX}_mysql_docker
+        restart: always
+        build: .docker/mysql
+        ports:
+            - "${DOCKER_MYSQL_PORT_3306}:3306"
+        volumes:
+            - db-data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DOCKER_MYSQL_ROOT_PASSWORD}
+            MYSQL_DATABASE: ${DOCKER_MYSQL_DB}
+            MYSQL_USER: ${DOCKER_MYSQL_USER}
+            MYSQL_PASSWORD: ${DOCKER_MYSQL_PASSWORD}
+        networks:
+            - dev
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        container_name: ${DOCKER_PREFIX}_pma_docker
+        restart: always
+        depends_on:
+            - db_mysql
+        ports:
+            - "${DOCKER_PMA_PORT_80}:80"
+        environment:
+            PMA_HOST: db_mysql
+            MYSQL_ROOT_PASSWORD: ${DOCKER_MYSQL_ROOT_PASSWORD}
+            MYSQL_USER: ${DOCKER_MYSQL_USER}
+            MYSQL_PASSWORD: ${DOCKER_MYSQL_PASSWORD}
+            PMA_USER: ${DOCKER_MYSQL_USER}
+            PMA_PASSWORD: ${DOCKER_MYSQL_PASSWORD}
+            UPLOAD_LIMIT: 500M
+        networks:
+            - dev
+    maildev:
+        image: maildev/maildev
+        container_name: ${DOCKER_PREFIX}_maildev_docker
+        command: bin/maildev --web 80 --smtp 1025 --hide-extensions STARTTLS
+        ports:
+            - "${DOCKER_MAILDEV_PORT_80}:80"
+        restart: always
+        networks:
+            - dev
+    php-apache:
+        user: "1000:1000"
+        build:
+            context: .docker/php
+            args:
+                SERVER_NAME: ${DOCKER_APACHE_HOSTNAME}
+        container_name: ${DOCKER_PREFIX}_www_docker
+        ports:
+            - "${DOCKER_APACHE_PORT_80}:80"
+        volumes:
+            - .:/var/www
+        restart: always
+        networks:
+            - dev
+    rabbitmq:
+        image: rabbitmq:3.8.17-management
+        restart: always
+        environment:
+            RABBITMQ_DEFAULT_USER: ${DOCKER_RABBITMQ_USER}
+            RABBITMQ_DEFAULT_PASS: ${DOCKER_RABBITMQ_PASSWORD}
+        ports:
+            - "${DOCKER_RABBITMQ_PORT_5672}:5672"
+            - "${DOCKER_RABBITMQ_PORT_15672}:15672"
+
+networks:
+    dev:
+
+volumes:
+    app:
+    db-data:
