@@ -74,6 +74,12 @@ All configurable options are stored in the [.env.template](.env.template) file
 3. Go to your project folder `cd <your_project_folder>`
 4. Rename .env.template to .env `mv .env.template .env`
 5. Change options according to your needs in `.env` file
+6. Build and start the containers `make start`
+7. Copy your sources at the root of the projet
+8. Install the sources according to your composer.json and composer.lock `make composer-install`
+9. Install yarn dependencies `make yarn-install`
+10. If needed, execute the migrations `make migrate`
+11. Compile and install the assets `make yarn-dev`
 
 ## How to use those containers with Symfony
 In your .env.local file
