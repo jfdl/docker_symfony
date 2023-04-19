@@ -25,6 +25,7 @@ build: ## Builds the Docker images
 up: ## Start the docker hub in detached mode (no logs)
 	@$(DOCKER_COMP) up --detach
 
+
 down: ## Stop the docker hub
 	@$(DOCKER_COMP) down --remove-orphans
 
@@ -46,12 +47,15 @@ sh: ## Connect to the PHP FPM container
 composer-install:
 	@$(DOCKER_COMP) exec -T $(PHP_SERVICE) composer install --prefer-dist --no-dev --no-progress --no-scripts --no-interaction
 
+composer-install-dev:
+	@$(DOCKER_COMP) exec -T $(PHP_SERVICE) composer install --prefer-dist --no-progress --no-scripts --no-interaction
+
 composer:
 	@$(eval c ?=)
 	@$(DOCKER_COMP) exec -T $(PHP_SERVICE) composer $(c)
 
 ## —— Yarn 🧙 ——————————————————————————————————————————————————————————————
-yarn-add: ## List all Symfony commands or pass the parameter "c=" to run a given command, example: make sf c=about
+yarn-add:
 	@$(eval c ?=)
 	@$(DOCKER_COMP) exec -T $(PHP_SERVICE) yarn add $(c)
 
@@ -62,6 +66,7 @@ yarn-dev:
 	@$(DOCKER_COMP) exec -T $(PHP_SERVICE) yarn dev
 
 yarn:
+	@echo "\n==> Running yarn dev, runner @$(DOCKER_COMP)"
 	@$(DOCKER_COMP) exec -T $(PHP_SERVICE) yarn $(c)
 
 ## —— Symfony 🎵 ———————————————————————————————————————————————————————————————

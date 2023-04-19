@@ -11,7 +11,7 @@ services:
             - db-data:/var/lib/mysql
         environment:
             MYSQL_ROOT_PASSWORD: ${DOCKER_MYSQL_ROOT_PASSWORD}
-            MYSQL_DATABASE: ${DOCKER_MYSQL_DB}
+            MYSQL_DATABASE: ${DOCKER_MYSQL_DATABASE}
             MYSQL_USER: ${DOCKER_MYSQL_USER}
             MYSQL_PASSWORD: ${DOCKER_MYSQL_PASSWORD}
         networks:

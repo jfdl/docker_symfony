@@ -3,7 +3,7 @@ FROM php:8.1-apache
 ARG SERVER_NAME
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends locales apt-utils git libicu-dev g++ libpng-dev libjpeg-dev libxml2-dev libzip-dev libonig-dev libxslt-dev unzip libmagickwand-dev libmcrypt-dev;
+    && apt-get install -y --no-install-recommends locales apt-utils git libicu-dev g++ libpng-dev libjpeg-dev libxml2-dev libzip-dev libonig-dev libxslt-dev unzip libmagickwand-dev libmcrypt-dev librabbitmq-dev;
 
 RUN a2enmod rewrite && a2enmod headers && a2enmod env && a2enmod http2
 
@@ -33,6 +33,7 @@ RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd
 RUN pecl install imagick && docker-php-ext-enable imagick
 RUN pecl install apcu && docker-php-ext-enable apcu
+RUN pecl install amqp && docker-php-ext-enable amqp
 
 RUN curl -sS https://get.symfony.com/cli/installer | bash
 RUN mv /root/.symfony5/bin/symfony /usr/local/bin/symfony && chmod +x /usr/local/bin/symfony
